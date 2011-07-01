@@ -21,7 +21,8 @@
 # 'Denemeyi'
 #
 # NOT: -in iyelik eki Python'da yerleşik bir deyim olması nede-
-# niyle "inn()" olarak isim verilmiştir.
+# niyle (kaynaştırma eki ile birlikte) "nin()" olarak isimlen-
+# dirilmiştir.
 #
 # Hata ve görüş bildirileri için:
 # E-posta : pythech.tr@gmail.com
@@ -108,7 +109,7 @@ class ek():
         self.__kaynaştırma="y"
         return self.__işle__()
 
-    def inn(self):
+    def nin(self):
         self.__ek="in"
         klm=self.__kelime.lower()
         if ("su","ne").count(klm) > 0:
