@@ -127,8 +127,7 @@ class ek():
 
     def n(self):
         if self._kacHeceli() == 1:
-            self.__ek="in"
-            self.__kaynastirma="n"
+            return self.nin()
         else:
             self.__ek="n"
             self.__unlu="i"
