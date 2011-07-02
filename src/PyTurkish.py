@@ -181,3 +181,4 @@ class ek():
                 self.__ek=self.__kaynastirma+self.__ek
         self.__kelime+=self.__ek
         return self.__kelime
+
