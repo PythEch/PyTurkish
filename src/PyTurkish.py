@@ -16,7 +16,7 @@
 # ister kabuk ister betik kısmında şu kodu ekleyerek kullanmaya
 # başlayabilirsiniz:
 #
-# import dilbilgisi
+# import PyTurkish
 #
 # Kullanım örneği:
 # >>> ek("Deneme").i()
