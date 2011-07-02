@@ -3,7 +3,7 @@
 
 ##################################################################
 #
-# Bu yazılım Test_12 tarafından yazılmış olup, geliştirme süreci
+# Bu yazılım PythEch tarafından yazılmış olup, geliştirme süreci
 # devam etmektedir.
 #
 # Programın amacı değişkenlere gelen eklerin dilbilgisine uygun
@@ -48,7 +48,7 @@
 ##################################################################
 
 class ek():
-    __author__ = 'Test_12'
+    __author__ = 'PythEch'
     __kelime=""
     __klm=""
     __ek=""
