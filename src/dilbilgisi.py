@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 ##################################################################
 #
@@ -49,11 +51,11 @@ class ek():
     __author__ = 'Test_12'
     __kelime=""
     __ek=""
-    __kaynaştırma=""
+    __kaynastirma=""
     __sertler=('p', 'ç', 't', 'k', 's', 'ş', 'h', 'f')
-    __yumuşama={'p':'b','ç':'c','t':'d','k':'ğ'}
-    __benzeşme={'c':'ç','d':'t','g':'k'}
-    __ünlüler={"tüm":('a','e','ı','i','u','ü','o','ö'),
+    __yumusama={'p':'b','ç':'c','t':'d','k':'ğ'}
+    __benzesme={'c':'ç','d':'t','g':'k'}
+    __unluler={"tüm":('a','e','ı','i','u','ü','o','ö'),
              "kalın":('a','ı','u','o'),
              "ince":('e','i','ü','ö'),
              "düz":('a','ı','e','i'),
@@ -70,72 +72,72 @@ class ek():
 
     def _inceMi(self):
         liste=['a',-1]
-        for i in self.__ünlüler["tüm"]:
+        for i in self.__unluler["tüm"]:
             ara=self.__kelime.rfind(i)
             if ara > liste[1]:
                 liste[0]=i
                 liste[1]=ara
-        if self.__ünlüler["ince"].count(liste[0]) > 0:
+        if self.__unluler["ince"].count(liste[0]) > 0:
             return True
         else:
             return False
 
-    def _düzMü(self):
+    def _duzMu(self):
         liste=['a',-1]
-        for i in self.__ünlüler["tüm"]:
+        for i in self.__unluler["tüm"]:
             ara=self.__kelime.rfind(i)
             if ara > liste[1]:
                 liste[0]=i
                 liste[1]=ara
-        if self.__ünlüler["düz"].count(liste[0]) > 0:
+        if self.__unluler["düz"].count(liste[0]) > 0:
             return True
         else:
             return False
 
     def de(self):
         self.__ek="de"
-        return self.__işle__()
+        return self.__isle__()
 
     def den(self):
         self.__ek="den"
-        return self.__işle__()
+        return self.__isle__()
 
     def ler(self):
         self.__ek="ler"
-        return self.__işle__()
+        return self.__isle__()
 
     def i(self):
         self.__ek="i"
-        self.__kaynaştırma="y"
-        return self.__işle__()
+        self.__kaynastirma="y"
+        return self.__isle__()
 
     def nin(self):
         self.__ek="in"
         klm=self.__kelime.lower()
         if ("su","ne").count(klm) > 0:
-            self.__kaynaştırma='y'
+            self.__kaynastirma='y'
         else:
-            self.__kaynaştırma="n"
-        return self.__işle__()
+            self.__kaynastirma="n"
+        return self.__isle__()
 
     def e(self):
         self.__ek="e"
-        self.__kaynaştırma="y"
-        return self.__işle__()
+        self.__kaynastirma="y"
+        return self.__isle__()
 
     def ce(self):
         self.__ek="ce"
-        return self.__işle__()
+        return self.__isle__()
 
 
-    def __işle__(self):
+    def __isle__(self):
         #Ünsüz Sertleşmesi (Benzeşmesi)
-        if self._sertMi() and self.__ek.startswith(tuple(self.__benzeşme.keys())):
-            self.__ek=self.__benzeşme[self.__ek[0]]+self.__ek[1:]
+        if self._sertMi() and self.__ek.startswith(tuple(self.__benzesme.keys())):
+            self.__ek=self.__benzesme[self.__ek[0]]+self.__ek[1:]
         #Ünsüz Yumuşaması
-        if self.__kelime.endswith(tuple(self.__yumuşama.keys()))\
-            and self.__ek.startswith(self.__ünlüler["tüm"]):
-                k=self.__yumuşama[self.__kelime[-1]]
+        if self.__kelime.endswith(tuple(self.__yumusama.keys()))\
+            and self.__ek.startswith(self.__unluler["tüm"]):
+                k=self.__yumusama[self.__kelime[-1]]
                 if self.__kelime[-2] == 'n' and k=='k':
                     self.__kelime=self.__kelime[:-1]+'g'
                 elif k=='k':
@@ -143,18 +145,18 @@ class ek():
                 else:
                     self.__kelime=self.__kelime[:-1]+k
         #Düzlük-Yuvarlaklık (Küçük Ünlü) Uyumu
-        if not self._düzMü():
+        if not self._duzMu():
             self.__ek=self.__ek.replace('i','ü')
         #Kalınlık-İncelik (Büyük Ünlü) Uyumu
         if not self._inceMi():
             #ls={x:ünlüler["kalın"][ünlüler["ince"].index(x)] for x in ünlüler["ince"]}
             n=0
-            for i in self.__ünlüler["ince"]:
-                self.__ek=self.__ek.replace(i,self.__ünlüler["kalın"][n])
+            for i in self.__unluler["ince"]:
+                self.__ek=self.__ek.replace(i,self.__unluler["kalın"][n])
                 n+=1
         #Kaynaştırma
-        if self.__kelime.endswith(self.__ünlüler["tüm"])\
-            and self.__ek.startswith(self.__ünlüler["tüm"]):
-                self.__ek=self.__kaynaştırma+self.__ek
+        if self.__kelime.endswith(self.__unluler["tüm"])\
+            and self.__ek.startswith(self.__unluler["tüm"]):
+                self.__ek=self.__kaynastirma+self.__ek
         self.__kelime+=self.__ek
         return self.__kelime
