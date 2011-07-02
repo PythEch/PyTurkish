@@ -32,7 +32,7 @@
 #   Xfire : physictr
 #   Steam : pythech
 #
-# Copyright (C) 2011 Test_12.
+# Copyright (C) 2011 PythEch
 #
 # Bu yazılımın, GNU Özgür Belgeleme Lisansı, Sürüm 2 veya Özgür
 # Yazılım Vakfı tarafından yayımlanmış daha yeni sürümlerindeki
