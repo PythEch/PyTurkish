@@ -50,8 +50,10 @@
 class ek():
     __author__ = 'Test_12'
     __kelime=""
+    __klm=""
     __ek=""
     __kaynastirma=""
+    __unlu=""
     __sertler=('p', 'ç', 't', 'k', 's', 'ş', 'h', 'f')
     __yumusama={'p':'b','ç':'c','t':'d','k':'ğ'}
     __benzesme={'c':'ç','d':'t','g':'k'}
@@ -63,6 +65,7 @@ class ek():
 
     def __init__(self,kelime):
         self.__kelime=kelime
+        self.__klm=self.__kelime.lower()
 
     def _sertMi(self):
         if self.__kelime.endswith(self.__sertler):
@@ -94,6 +97,12 @@ class ek():
         else:
             return False
 
+    def _kacHeceli(self):
+        n=0
+        for i in self.__unluler["tüm"]:
+            n+=self.__kelime.count(i)
+        return n
+
     def de(self):
         self.__ek="de"
         return self.__isle__()
@@ -113,12 +122,20 @@ class ek():
 
     def nin(self):
         self.__ek="in"
-        klm=self.__kelime.lower()
-        if ("su","ne").count(klm) > 0:
-            self.__kaynastirma='y'
-        else:
-            self.__kaynastirma="n"
+        self.__kaynastirma="n"
         return self.__isle__()
+
+    def n(self):
+        if self._kacHeceli() == 1:
+            self.__ek="in"
+            self.__kaynastirma="n"
+        else:
+            self.__ek="n"
+            self.__unlu="i"
+        return self.__isle__()
+
+    def senin(self):
+        return self.n()
 
     def e(self):
         self.__ek="e"
@@ -143,6 +160,10 @@ class ek():
                     pass
                 else:
                     self.__kelime=self.__kelime[:-1]+k
+        #Ara Ünlüsü
+        if not self.__ek.startswith(self.__unluler["tüm"]) and \
+           not self.__kelime.endswith(self.__unluler["tüm"]):
+            self.__ek=self.__unlu+self.__ek
         #Düzlük-Yuvarlaklık (Küçük Ünlü) Uyumu
         if not self._duzMu():
             self.__ek=self.__ek.replace('i','ü')
@@ -154,6 +175,8 @@ class ek():
                 self.__ek=self.__ek.replace(i,self.__unluler["kalın"][n])
                 n+=1
         #Kaynaştırma
+        if ("su","ne").count(self.__klm) > 0:
+            self.__kaynastirma='y'
         if self.__kelime.endswith(self.__unluler["tüm"])\
             and self.__ek.startswith(self.__unluler["tüm"]):
                 self.__ek=self.__kaynastirma+self.__ek
