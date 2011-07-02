@@ -129,7 +129,6 @@ class ek():
         self.__ek="ce"
         return self.__isle__()
 
-
     def __isle__(self):
         #Ünsüz Sertleşmesi (Benzeşmesi)
         if self._sertMi() and self.__ek.startswith(tuple(self.__benzesme.keys())):
