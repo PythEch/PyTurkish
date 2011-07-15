@@ -12,7 +12,7 @@
 # rahatsız olduysanız bu yazılımı kullaniblir ve geliştirebilir-
 # siniz.
 #
-# Script/Betik dosyasını Python 3.x kök dizinine attıktan sonra
+# Script/Betik dosyasını Python kök dizinine attıktan sonra
 # ister kabuk ister betik kısmında şu kodu ekleyerek kullanmaya
 # başlayabilirsiniz:
 #
