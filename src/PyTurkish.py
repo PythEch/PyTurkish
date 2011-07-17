@@ -103,9 +103,6 @@ class ek():
         for i in self.__unluler["tüm"]:
             n+=self.__kelime.count(i)
         return n
-    
-    class cekim:
-        def de(self): return ek(ek.__kelime).de()
         
     def de(self):
         self.__ek="de"
