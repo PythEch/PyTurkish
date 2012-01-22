@@ -3,6 +3,9 @@
 
 ##################################################################
 #
+# Python 2.7.2 ile yazılmıştır. Diğer sürümlerle uyumluluğu tam
+# olarak bilinmemektedir.
+#
 # Bu yazılım PythEch tarafından yazılmış olup, geliştirme süreci
 # devam etmektedir.
 #
@@ -32,7 +35,7 @@
 #   Xfire : physictr
 #   Steam : pythech
 #
-# Copyright (C) 2011 PythEch
+# Copyright (C) 2011-2012 PythEch
 #
 # Bu yazılımın, GNU Özgür Belgeleme Lisansı, Sürüm 2 veya Özgür
 # Yazılım Vakfı tarafından yayımlanmış daha yeni sürümlerindeki
@@ -46,6 +49,34 @@
 # göz atın.
 #
 ##################################################################
+
+# bobince'e Teşekkürler: http://stackoverflow.com/a/722175/180343
+import weakref, new
+class innerclass(object):
+    """Descriptor for making inner classes.
+
+    Adds a property 'owner' to the inner class, pointing to the outer
+    owner instance.
+    """
+
+    # Use a weakref dict to memoise previous results so that
+    # instance.Inner() always returns the same inner classobj.
+    #
+    def __init__(self, inner):
+        self.inner= inner
+        self.instances= weakref.WeakKeyDictionary()
+
+    # Not thread-safe - consider adding a lock.
+    #
+    def __get__(self, instance, _):
+        if instance is None:
+            return self.inner
+        if instance not in self.instances:
+            self.instances[instance]= new.classobj(
+                self.inner.__name__, (self.inner,), {'owner': instance}
+            )
+        return self.instances[instance]
+
 class ek():
     __kelime=""
     __klm=""
@@ -103,6 +134,25 @@ class ek():
         for i in self.__unluler["tüm"]:
             n+=self.__kelime.count(i)
         return n
+    
+    @innerclass
+    class cekim():
+        def de(self):
+            return self.owner.de()
+        def den(self):
+            return self.owner.den()
+        def ler(self):
+            return self.owner.ler()
+        def i(self):
+            return self.owner.i()
+        def nin(self):
+            return self.owner.nin()
+        def n(self):
+            return self.owner.n()
+        def e(self):
+            return self.owner.e()
+        def ce(self):
+            return self.owner.ce()
         
     def de(self):
         self.__ek="de"
