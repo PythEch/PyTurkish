@@ -20,7 +20,7 @@ Kullaným örneði:
 >>> ek("Deneme").i()
 'Denemeyi'
 
-NOT: -in iyelik eki Python'da yerleþik bir deyim olmasý nede-
+NOT: -in tamlama eki Python'da yerleþik bir deyim olmasý nede-
 niyle (kaynaþtýrma eki ile birlikte) "nin()" olarak isimlen-
 dirilmiþtir.
 
