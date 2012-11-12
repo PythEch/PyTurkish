@@ -1,5 +1,7 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+# -*- coding: cp1254 -*-
+
+# Sürüm 1.1
 
 ##################################################################
 #
@@ -13,6 +15,7 @@
 
 # bobince'e Teþekkürler: http://stackoverflow.com/a/722175/180343
 import weakref, new
+import string
 class innerclass(object):
     """Descriptor for making inner classes.
 
@@ -39,10 +42,11 @@ class innerclass(object):
         return self.instances[instance]
 
 class ek():
-    __kelime=""
+    __sozcuk=""
+    __asilSozcuk = ""
     __ek=""
     __kaynastirma=""
-    __ozelIsim=""
+    __ozelIsim = False
     __sertler=('p', 'ç', 't', 'k', 's', 'þ', 'h', 'f')
     __yumusama={'p':'b','ç':'c','t':'d','k':'ð'}
     __benzesme={'c':'ç','d':'t','g':'k'}
@@ -51,20 +55,46 @@ class ek():
              "ince":('e','i','ü','ö'),
              "düz":('a','ý','e','i'),
              "yuvarlak":('o','u','ö','ü')}
+    __sayilar={"on": {'1':'on', '2':'yirmi', '3':'otuz', 
+                      '4':'kýrk', '5':'elli', '6':'altmýþ',
+                      '7':'yetmiþ', '8':'seksen', '9':'doksan'},
+               "bir": {'0':'sýfýr', '1':'bir', '2':'iki', '3':'üç',
+                       '4':'dört', '5':'beþ', '6':'altý', '7':'yedi', 
+                       '8':'sekiz', '9':'dokuz'}}
     #Tamamlanacak
-    _istisna={"kök":{"þu":"þun", "bu":"bun", "o":"on"}, #Ek aldýklarýnda kökü deðiþen kelimeler
-              "kelime":{"bene":"bana", "sene":"sana"} #Diðer istisnalar
+    _istisna={"kök":{"þu":"þun", "bu":"bun", "o":"on"}, #Ek aldýklarýnda kökü deðiþen sozcukler
+              "sozcük":{"bene":"bana", "sene":"sana"} #Diðer istisnalar
     }
 
     def __repr__(self):
-        return self.__kelime
+        return self.__sozcuk
     
-    def __init__(self,Kelime,ozelIsim=False):
-        self.__kelime=Kelime.lower()
+    def __init__(self,Sozcuk,ozelIsim=False):
+        self.__sozcuk = Sozcuk.lower()
+        self.__asilSozcuk = Sozcuk
         self.__ozelIsim = ozelIsim
 
+    # 3 gereksiz fonksiyon, ileride belki kaldýrýrým
+    def __saveCase(self):
+        caseList=[]
+        for i in self.__asilSozcuk:
+            caseList.append(True if i.isupper() else False)
+        return caseList
+
+    def __loadCase(self, caseList):
+        for n in range(len(caseList)):
+            self.__asilSozcuk = self.__asilSozcuk[:n] + (self.__asilSozcuk[n].upper() if caseList[n] else self.__asilSozcuk[n].lower()) + self.__asilSozcuk[n+1:]
+            
+	# Case Insensitive Change, Case Insensitive'i çeviremediðimden 
+	# dolayý yarý Ýngilizce yarý Türkçe yapmak istemedim
+	# Makul bir karþýlýðý varsa lütfen bildirin
+    def __ciChange(self,to):
+        caseList = self.__saveCase()
+        self.__asilSozcuk = to
+        self.__loadCase(caseList)
+
     def _sertMi(self):
-        if self.__kelime.endswith(self.__sertler):
+        if self.__sozcuk.endswith(self.__sertler):
             return True
         else:
             return False
@@ -72,7 +102,7 @@ class ek():
     def _inceMi(self):
         liste=['a',-1]
         for i in self.__unluler["tüm"]:
-            ara=self.__kelime.rfind(i)
+            ara=self.__sozcuk.rfind(i)
             if ara > liste[1]:
                 liste[0]=i
                 liste[1]=ara
@@ -84,7 +114,7 @@ class ek():
     def _duzMu(self):
         liste=['a',-1]
         for i in self.__unluler["tüm"]:
-            ara=self.__kelime.rfind(i)
+            ara=self.__sozcuk.rfind(i)
             if ara > liste[1]:
                 liste[0]=i
                 liste[1]=ara
@@ -96,7 +126,7 @@ class ek():
     def _kacHeceli(self):
         n=0
         for i in self.__unluler["tüm"]:
-            n+=self.__kelime.count(i)
+            n+=self.__sozcuk.count(i)
         return n
     
     @innerclass
@@ -141,7 +171,7 @@ class ek():
         return self.__isle__()
 
     def n(self):
-        if self._kacHeceli() == 1:
+        if self._kacHeceli() <= 1:
             return self.nin()
         else:
             self.__ek="n"
@@ -161,22 +191,53 @@ class ek():
         return self.__isle__()
 
     def __isle__(self):
+        #Ýstisna 1
+        if self.__sozcuk in self._istisna["kök"]:
+            self.__ciChange(self._istisna["kök"][self.__sozcuk])
+            self.__sozcuk = self.__asilSozcuk.lower()
+        #Sayýlar
+        if self.__sozcuk.endswith(tuple(string.digits)):
+            sayi = ""
+            # Sayýyý yalnýz býrak
+            self.__sozcuk = self.__sozcuk.replace(",","").replace(".","")
+            for i in range(self.__sozcuk.__len__()):
+                if not self.__sozcuk[-i].isdigit():
+                        sayi = self.__sozcuk[(-i)+1:]
+                        break
+            # Sayýnýn sonunda kaç tane sýfýr olduðunu say
+            sifir = 0
+            for i in range(sayi.__len__()):
+                if sayi[-i-1] != "0":
+                    sifir = i
+                    break
+            if sifir >= 12:
+                self.__sozcuk = 'trilyon'
+                #10^12 den sonra basamaklar 'ilyon' ile bittiði için ek getirirken farklýlýk oluþturmuyor
+            elif sifir >= 9:
+                self.__sozcuk = 'milyar'
+            elif sifir >= 6:
+                self.__sozcuk = 'milyon'
+            elif sifir >= 3:
+                self.__sozcuk = 'bin'
+            elif sifir == 2:
+                self.__sozcuk = 'yüz'
+            elif sifir == 1:
+                self.__sozcuk = self.__sayilar["on"][sayi[-2]]
+            else:
+                self.__sozcuk = self.__sayilar["bir"][sayi[-1]]
         #Ünsüz Sertleþmesi (Benzeþmesi)
         if self._sertMi() and self.__ek.startswith(tuple(self.__benzesme.keys())):
             self.__ek=self.__benzesme[self.__ek[0]]+self.__ek[1:]
         #Ünsüz Yumuþamasý
-        if self.__kelime.endswith(tuple(self.__yumusama.keys()))\
-            and self.__ek.startswith(self.__unluler["tüm"]):
-                k=self.__yumusama[self.__kelime[-1]]
-                if self.__kelime[-2] == 'n' and k=='k':
-                    self.__kelime=self.__kelime[:-1]+'g'
-                elif k=='k':
-                    pass
-                else:
-                    self.__kelime=self.__kelime[:-1]+k
+        if not self.__ozelIsim and self._kacHeceli() > 1 and self.__sozcuk.endswith(tuple(self.__yumusama.keys())) and self.__ek.startswith(self.__unluler["tüm"]):
+                k=self.__yumusama[self.__sozcuk[-1]]
+                if self.__sozcuk[-2] == 'n' and k=='ð':
+                    self.__ciChange(self.__sozcuk[:-1]+'g')
+                elif k!="ð" or self.__sozcuk[-2] in self.__unluler["tüm"]:
+                    self.__ciChange(self.__sozcuk[:-1]+k)
         #Kaynaþtýrma Ünlüsü
         if not self.__ek.startswith(self.__unluler["tüm"]) and \
-           not self.__kelime.endswith(self.__unluler["tüm"]):
+           not self.__sozcuk.endswith(self.__unluler["tüm"]):
             self.__ek=self.__kaynastirma+self.__ek
         #Düzlük-Yuvarlaklýk (Küçük Ünlü) Uyumu
         if not self._duzMu():
@@ -188,17 +249,15 @@ class ek():
                 self.__ek=self.__ek.replace(i,self.__unluler["kalýn"][n])
                 n+=1
         #Kaynaþtýrma Ünsüzü
-        if ("su","ne").count(self.__kelime) > 0:
+        if ("su","ne").count(self.__sozcuk) > 0:
             self.__kaynastirma='y'
-        if self.__kelime.endswith(self.__unluler["tüm"])\
+        if self.__sozcuk.endswith(self.__unluler["tüm"])\
             and self.__ek.startswith(self.__unluler["tüm"]):
                 self.__ek=self.__kaynastirma+self.__ek
         if self.__ozelIsim:
             self.__ek="'"+self.__ek
-        #Ýstisna
-        if self.__ek in self._istisna["kök"]:
-            self.__ek = self._istisna["kök"][self.__ek]
-        self.__kelime+=self.__ek
-        if self.__kelime in self._istisna["kelime"].keys():
-            self.__kelime = self._istisna["kelime"][self.__kelime]
-        return self.__kelime
+        #Ýstisna 2
+        self.__asilSozcuk+=self.__ek
+        if self.__asilSozcuk.lower() in self._istisna["sozcük"]:
+            self.__ciChange(self._istisna["sozcük"][self.__asilSozcuk.lower()])
+        return self.__asilSozcuk
