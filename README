@@ -1,16 +1,13 @@
 Python 2.7.3 ile yazýlmýþtýr. Diðer sürümlerle uyumluluðu tam
 olarak bilinmemektedir.
 
-Bu yazýlým PythEch tarafýndan yazýlmýþ olup, geliþtirme süreci
-devam etmektedir.
-
 Programýn amacý deðiþkenlere gelen eklerin dilbilgisine uygun
-bir þekilde yazýlmasýný otomatikleþtirmektir. Özellikle
-internet sitelerinde karþýlaþýlan bu sýkýntýdan benim gibi
-rahatsýz olduysanýz bu yazýlýmý kullaniblir ve geliþtirebilir-
-siniz.
+bir þekilde yazýlmasýný otomatikleþtirmektir (diðer bir deyiþle
+çekim ekleri kütüphanesidir). Özellikle websitelerinde karþýlaþýlan 
+bu sýkýntýdan benim gibi rahatsýz olduysanýz bu yazýlýmý kullaniblir 
+ve geliþtirebilirsiniz.
 
-Script/Betik dosyasýný Python kök dizinine attýktan sonra
+Betik dosyasýný Python kök dizinine attýktan sonra
 ister kabuk ister betik kýsmýnda þu kodu ekleyerek kullanmaya
 baþlayabilirsiniz:
 
@@ -24,8 +21,4 @@ NOT: -in tamlama eki Python'da yerleþik bir deyim olmasý nede-
 niyle (kaynaþtýrma eki ile birlikte) "nin()" olarak isimlen-
 dirilmiþtir.
 
-Hata ve görüþ bildirileri için:
-E-posta : pythech.tr@gmail.com
-    Msn : physic_tr@hotmail.com
-  Xfire : physictr
-  Steam : pythech
+Hata ve görüþ bildirileri için, "Issues" bölümüne mesaj atýnýz.

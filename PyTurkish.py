@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: cp1254 -*-
 
-# Sürüm 1.1
+#Sürüm: 1.2
 
 ##################################################################
 #
-# Copyright (C) 2011-2012 PythEch
+# Copyright (C) 2011-2013 PythEch
 #
 # This Source Code Form is subject to the terms of the Mozilla 
 # Public License, v. 2.0. If a copy of the MPL was not distributed 
@@ -13,39 +13,21 @@
 #
 ##################################################################
 
-# bobince'e Teþekkürler: http://stackoverflow.com/a/722175/180343
-import weakref, new
 import string
-class innerclass(object):
-    """Descriptor for making inner classes.
-
-    Adds a property 'owner' to the inner class, pointing to the outer
-    owner instance.
-    """
-
-    # Use a weakref dict to memoise previous results so that
-    # instance.Inner() always returns the same inner classobj.
-    #
-    def __init__(self, inner):
-        self.inner= inner
-        self.instances= weakref.WeakKeyDictionary()
-
-    # Not thread-safe - consider adding a lock.
-    #
-    def __get__(self, instance, _):
-        if instance is None:
-            return self.inner
-        if instance not in self.instances:
-            self.instances[instance]= new.classobj(
-                self.inner.__name__, (self.inner,), {'owner': instance}
-            )
-        return self.instances[instance]
-
 class ek():
-    __sozcuk=""
-    __asilSozcuk = ""
+    """ek([String]Sözcük, [Boolean]ÖzelIsim=False).fonksiyon() -> String
+Çekim ekleri kütüphanesi.
+
+Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
+>>> "Sözcükten"
+Özel isimler için: ek("Ali",True).i()
+>>> "Ali'yi"
+"""
+    sayilardaOtomatikOzelIsim=True #Sayý girildiðinde otomatik olarak özel isim kabul edilecek, örn: 'ek("5").den() büyük sayýlar' >>> 5'ten büyük sayýlar 
+    __sozcuk="" #Küçük harflere çevirilmiþ sözcük
+    __asilSozcuk = "" #Orijinal sözcük
     __ek=""
-    __kaynastirma=""
+    __kaynastirma="" # Ünlü/Ünsüz kaynaþtýrma eki, __isle__() fonksiyonu otomatik karar verir
     __ozelIsim = False
     __sertler=('p', 'ç', 't', 'k', 's', 'þ', 'h', 'f')
     __yumusama={'p':'b','ç':'c','t':'d','k':'ð'}
@@ -55,154 +37,150 @@ class ek():
              "ince":('e','i','ü','ö'),
              "düz":('a','ý','e','i'),
              "yuvarlak":('o','u','ö','ü')}
-    __sayilar={"on": {'1':'on', '2':'yirmi', '3':'otuz', 
+    __sayilar={2: {'1':'on', '2':'yirmi', '3':'otuz', 
                       '4':'kýrk', '5':'elli', '6':'altmýþ',
                       '7':'yetmiþ', '8':'seksen', '9':'doksan'},
-               "bir": {'0':'sýfýr', '1':'bir', '2':'iki', '3':'üç',
+               1: {'0':'sýfýr', '1':'bir', '2':'iki', '3':'üç',
                        '4':'dört', '5':'beþ', '6':'altý', '7':'yedi', 
                        '8':'sekiz', '9':'dokuz'}}
     #Tamamlanacak
-    _istisna={"kök":{"þu":"þun", "bu":"bun", "o":"on"}, #Ek aldýklarýnda kökü deðiþen sozcukler
-              "sozcük":{"bene":"bana", "sene":"sana"} #Diðer istisnalar
+    _istisna={"kök":{"þu":"þun", "bu":"bun", "o":"on"},#Ek aldýklarýnda kökü deðiþen sözcükler
+              "sözcük":{"bene":"bana", "sene":"sana"}, #Diðer istisnalar
+              "ünlü":{"renk":"reng", "isim":"ism", "beyin":"beyn", "boyun":"boyn", "karýn":"karn", "af":"aff",
+                    "kýsým":"kýsm", "nesil":"nesl", "burun":"burn", "zulüm":"zulm", "akýl":"akl", "asýl":"asl" ,"asýr":"asr", "devir":"devr", 
+                    "emir":"emr", "fikir":"fikr", "ilim":"ilm", "kayýt":"kayd", "keþif":"keþf", "keyif":"keyf", "nakil":"nakl", "nehir":"nehr",
+                    "sabýr":"sabr", "seyir":"seyr", "þehir":"þehr", "þekil":"þekl", "zehir":"zehr", "zihin":"zihn", "zan":"zann","baðýr":"baðr",
+                    "aðýz":"aðz", "alýn":"aln", "beniz":"benz", "böðür":"böðr", "geniz":"genz", "göðüs":"göðs", "gönül":"gönl", "oðul":"oðl",
+                    "resim":"resm", "kayýn":"kayn", "kayýp":"kayb", "nabýz":"nabz"}, #Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
+              #Büyük ünlü uyumu istisnalarý #Cem Yýldýz'a teþekkürler
+              "büu": ("kontrol", "bandrol", "banal", "alpul", "ametal", "anormal", "amiral"
+                       , "sadakat", "santral", "þefkat", "usul", "normal", "oryantal", "hakikat"
+                       , "hayal", "saat", "kemal", "gol", "kalp", "metal", "faul", "mineral", "alkol"
+                       , "misal", "meal", "oramiral", "tuðamiral", "orjinal", "koramiral", "general"
+                       , "tümgeneral", "tuðgeneral", "korgeneral", "petrol", "liberal", "meral"
+                       , "metrapol", "ekümenapol", "lokal", "lügat", "liyakat", "legal", "mentol"
+                       , "beþamol", "meþgul", "meþekkat", "oval", "mahsul", "makul", "meraþal"
+                       , "metaryal", "nasihat", "radikal", "moral", "dikkat", "rol", "sinyal"
+                       , "sosyal", "total", "þevval", "sual", "spesiyal", "tuval", "turnusol", "hol"
+                       , "tropikal", "zeval", "zelal", "terminal", "termal", "resul", "sadakat", "resital"
+                       , "refakat", "pastoral", "hal", "müzikal", "müzikhol", "menkul", "mahmul", "maktul"
+                       , "kolestrol", "kýraat", "ziraaat", "kapital", "katedral", "kabul", "kanaat", "jurnal"
+                       , "kefal", "idrak", "istiklal", "integral", "final", "ekol", "emsal", "enternasyonal"
+                       , "nasyonal", "enstrümantal", "harf", "cemal", "cemaat", "glikol", "karambol", "parabol"
+                       , "kemal", "zulm", "nakl") #Turkish-Suffix-Library'den alýnmýþtýr. (https://github.com/miklagard/Turkish-Suffix-Library)
     }
 
     def __repr__(self):
         return self.__sozcuk
     
     def __init__(self,Sozcuk,ozelIsim=False):
-        self.__sozcuk = Sozcuk.lower()
+        self.__sozcuk = Sozcuk.replace("Ý","i").replace("I","ý").lower() #Python Türkçe bug-fix
         self.__asilSozcuk = Sozcuk
         self.__ozelIsim = ozelIsim
 
-    # 3 gereksiz fonksiyon, ileride belki kaldýrýrým
-    def __saveCase(self):
-        caseList=[]
-        for i in self.__asilSozcuk:
-            caseList.append(True if i.isupper() else False)
-        return caseList
-
-    def __loadCase(self, caseList):
-        for n in range(len(caseList)):
-            self.__asilSozcuk = self.__asilSozcuk[:n] + (self.__asilSozcuk[n].upper() if caseList[n] else self.__asilSozcuk[n].lower()) + self.__asilSozcuk[n+1:]
-            
-	# Case Insensitive Change, Case Insensitive'i çeviremediðimden 
-	# dolayý yarý Ýngilizce yarý Türkçe yapmak istemedim
-	# Makul bir karþýlýðý varsa lütfen bildirin
-    def __ciChange(self,to):
-        caseList = self.__saveCase()
-        self.__asilSozcuk = to
-        self.__loadCase(caseList)
-
+    #Analiz fonksiyonlarý
     def _sertMi(self):
-        if self.__sozcuk.endswith(self.__sertler):
-            return True
-        else:
-            return False
+        return (True if self.__sozcuk.endswith(self.__sertler) else False)
 
-    def _inceMi(self):
+    def _sonUnlu(self):
         liste=['a',-1]
         for i in self.__unluler["tüm"]:
             ara=self.__sozcuk.rfind(i)
             if ara > liste[1]:
                 liste[0]=i
                 liste[1]=ara
-        if self.__unluler["ince"].count(liste[0]) > 0:
-            return True
-        else:
-            return False
+        return liste[0]
+    
+    def _inceMi(self):
+        return (True if self.__unluler["ince"].count(self._sonUnlu()) > 0 else False)
 
     def _duzMu(self):
-        liste=['a',-1]
-        for i in self.__unluler["tüm"]:
-            ara=self.__sozcuk.rfind(i)
-            if ara > liste[1]:
-                liste[0]=i
-                liste[1]=ara
-        if self.__unluler["düz"].count(liste[0]) > 0:
-            return True
-        else:
-            return False
+        return (True if self.__unluler["düz"].count(self._sonUnlu()) > 0 else False)
 
+    #Ünlü saymak hatalara neden olabilir#
     def _kacHeceli(self):
         n=0
         for i in self.__unluler["tüm"]:
             n+=self.__sozcuk.count(i)
         return n
-    
-    @innerclass
-    class cekim():
-        def de(self):
-            return self.owner.de()
-        def den(self):
-            return self.owner.den()
-        def ler(self):
-            return self.owner.ler()
-        def i(self):
-            return self.owner.i()
-        def nin(self):
-            return self.owner.nin()
-        def n(self):
-            return self.owner.n()
-        def e(self):
-            return self.owner.e()
-        def ce(self):
-            return self.owner.ce()
+
+    #Çoðul Eki    
+    def ler(self):
+        """Çoðul eki"""
+        self.__ek="ler"
+        return self.__isle__()
+        
+    #Durum (Hâl) Ekleri
+    def i(self):
+        """Belirtme durum eki"""
+        self.__ek="i"
+        self.__kaynastirma="y"
+        return self.__isle__()
+        
+    def e(self):
+        """Yönelme durum eki"""
+        self.__ek="e"
+        self.__kaynastirma="y"
+        return self.__isle__()
         
     def de(self):
+        """Bulunma durum eki"""
         self.__ek="de"
         return self.__isle__()
 
     def den(self):
+        """Ayrýlma durum eki"""
         self.__ek="den"
         return self.__isle__()
-
-    def ler(self):
-        self.__ek="ler"
+    
+    #Ýyelik Ekleri
+    def benim(self):
+        """Ýyelik eki (ben)"""
+        self.__ek="m"
+        self.__kaynastirma="i"
         return self.__isle__()
-
-    def i(self):
-        self.__ek="i"
-        self.__kaynastirma="y"
+        
+    def senin(self):
+        """Ýyelik eki (sen)"""
+        self.__ek="n"
+        self.__kaynastirma="i"
         return self.__isle__()
     
+    def onun(self):
+        """Ýyelik eki (o)"""
+        self.__ek="i"
+        self.__kaynastirma="s"
+        return self.__isle__()
+
+    #Tamlayan Eki
     def nin(self):
+        """Ýlgi eki (tamlayan)
+    
+Örnek: ek("Kapý").nin()+' '+ek("kol").i()"""
         self.__ek="in"
         self.__kaynastirma="n"
         return self.__isle__()
 
-    def n(self):
-        if self._kacHeceli() <= 1:
-            return self.nin()
-        else:
-            self.__ek="n"
-            self.__kaynastirma="i"
-        return self.__isle__()
-
-    def senin(self):
-        return self.n()
-
-    def e(self):
-        self.__ek="e"
-        self.__kaynastirma="y"
-        return self.__isle__()
-
+    #Eþitlik eki
     def ce(self):
+        """Eþitlik eki"""
         self.__ek="ce"
         return self.__isle__()
 
     def __isle__(self):
         #Ýstisna 1
         if self.__sozcuk in self._istisna["kök"]:
-            self.__ciChange(self._istisna["kök"][self.__sozcuk])
-            self.__sozcuk = self.__asilSozcuk.lower()
+            self.__sozcuk = self._istisna["kök"][self.__sozcuk]
         #Sayýlar
         if self.__sozcuk.endswith(tuple(string.digits)):
+            if self.sayilardaOtomatikOzelIsim:
+                self.__ozelIsim=True
             sayi = ""
             # Sayýyý yalnýz býrak
             self.__sozcuk = self.__sozcuk.replace(",","").replace(".","")
-            for i in range(self.__sozcuk.__len__()):
-                if not self.__sozcuk[-i].isdigit():
-                        sayi = self.__sozcuk[(-i)+1:]
+            for i in range(1, self.__sozcuk.__len__()+1):
+                if i == self.__sozcuk.__len__() or not self.__sozcuk[-i-1].isdigit():
+                        sayi = self.__sozcuk[(-i):]
                         break
             # Sayýnýn sonunda kaç tane sýfýr olduðunu say
             sifir = 0
@@ -222,9 +200,12 @@ class ek():
             elif sifir == 2:
                 self.__sozcuk = 'yüz'
             elif sifir == 1:
-                self.__sozcuk = self.__sayilar["on"][sayi[-2]]
+                self.__sozcuk = self.__sayilar[2][sayi[-2]]
             else:
-                self.__sozcuk = self.__sayilar["bir"][sayi[-1]]
+                self.__sozcuk = self.__sayilar[1][sayi[-1]]
+            asilSozcuk=self.__sozcuk
+            ret=self.__isle__()
+            return self.__asilSozcuk[:-(sayi.__len__())] + ret.replace(asilSozcuk, sayi)
         #Ünsüz Sertleþmesi (Benzeþmesi)
         if self._sertMi() and self.__ek.startswith(tuple(self.__benzesme.keys())):
             self.__ek=self.__benzesme[self.__ek[0]]+self.__ek[1:]
@@ -232,32 +213,40 @@ class ek():
         if not self.__ozelIsim and self._kacHeceli() > 1 and self.__sozcuk.endswith(tuple(self.__yumusama.keys())) and self.__ek.startswith(self.__unluler["tüm"]):
                 k=self.__yumusama[self.__sozcuk[-1]]
                 if self.__sozcuk[-2] == 'n' and k=='ð':
-                    self.__ciChange(self.__sozcuk[:-1]+'g')
+                    self.__sozcuk = self.__sozcuk[:-1]+'g'
                 elif k!="ð" or self.__sozcuk[-2] in self.__unluler["tüm"]:
-                    self.__ciChange(self.__sozcuk[:-1]+k)
+                    self.__sozcuk = self.__sozcuk[:-1]+k
         #Kaynaþtýrma Ünlüsü
-        if not self.__ek.startswith(self.__unluler["tüm"]) and \
-           not self.__sozcuk.endswith(self.__unluler["tüm"]):
+        if not self.__ek.startswith(self.__unluler["tüm"]) and not self.__sozcuk.endswith(self.__unluler["tüm"]):
             self.__ek=self.__kaynastirma+self.__ek
         #Düzlük-Yuvarlaklýk (Küçük Ünlü) Uyumu
         if not self._duzMu():
             self.__ek=self.__ek.replace('i','ü')
         #Kalýnlýk-Ýncelik (Büyük Ünlü) Uyumu
-        if not self._inceMi():
+        if not self._inceMi() and not self.__sozcuk in self._istisna["büu"]:
             n=0
             for i in self.__unluler["ince"]:
                 self.__ek=self.__ek.replace(i,self.__unluler["kalýn"][n])
                 n+=1
         #Kaynaþtýrma Ünsüzü
-        if ("su","ne").count(self.__sozcuk) > 0:
+        if ("su","ne").count(self.__sozcuk) > 0: #Su, Ne sözcükleri istisnasý
             self.__kaynastirma='y'
-        if self.__sozcuk.endswith(self.__unluler["tüm"])\
-            and self.__ek.startswith(self.__unluler["tüm"]):
+        if self.__sozcuk.endswith(self.__unluler["tüm"]) and self.__ek.startswith(self.__unluler["tüm"]):
                 self.__ek=self.__kaynastirma+self.__ek
         if self.__ozelIsim:
             self.__ek="'"+self.__ek
         #Ýstisna 2
-        self.__asilSozcuk+=self.__ek
-        if self.__asilSozcuk.lower() in self._istisna["sozcük"]:
-            self.__ciChange(self._istisna["sozcük"][self.__asilSozcuk.lower()])
-        return self.__asilSozcuk
+        if self.__sozcuk in self._istisna["ünlü"] and self.__ek.startswith(self.__unluler["tüm"]):
+            self.__sozcuk = self._istisna["ünlü"][self.__sozcuk]
+        self.__sozcuk += self.__ek
+        #Ýstisna 3
+        if self.__sozcuk in self._istisna["sözcük"]:
+            self.__sozcuk = self._istisna["sözcük"][self.__sozcuk]
+        #Return
+        if self.__asilSozcuk.isupper():
+            return self.__sozcuk.replace("i","Ý").replace("ý","I").upper() #Python Türkçe bug-fix
+        elif self.__asilSozcuk.istitle():
+            self.__sozcuk = self.__sozcuk[0].replace("i","Ý").replace("ý","I") + self.__sozcuk[1:] #Python Türkçe bug-fix
+            return self.__sozcuk.title()
+        else:
+            return self.__sozcuk
