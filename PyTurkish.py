@@ -46,19 +46,19 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
     #Tamamlanacak
     _istisna={"kök":{"þu":"þun", "bu":"bun", "o":"on"},#Ek aldýklarýnda kökü deðiþen sözcükler
               "sözcük":{"bene":"bana", "sene":"sana"}, #Diðer istisnalar
-              "ünlü":{"renk":"reng", "isim":"ism", "beyin":"beyn", "boyun":"boyn", "karýn":"karn", "af":"aff",
+              "ünlü":{"renk":"reng", "cenk":"ceng", "his":"hiss", "isim":"ism", "beyin":"beyn", "boyun":"boyn", "karýn":"karn", "af":"aff",
                     "kýsým":"kýsm", "nesil":"nesl", "burun":"burn", "zulüm":"zulm", "akýl":"akl", "asýl":"asl" ,"asýr":"asr", "devir":"devr", 
                     "emir":"emr", "fikir":"fikr", "ilim":"ilm", "kayýt":"kayd", "keþif":"keþf", "keyif":"keyf", "nakil":"nakl", "nehir":"nehr",
                     "sabýr":"sabr", "seyir":"seyr", "þehir":"þehr", "þekil":"þekl", "zehir":"zehr", "zihin":"zihn", "zan":"zann","baðýr":"baðr",
                     "aðýz":"aðz", "alýn":"aln", "beniz":"benz", "böðür":"böðr", "geniz":"genz", "göðüs":"göðs", "gönül":"gönl", "oðul":"oðl",
-                    "resim":"resm", "kayýn":"kayn", "kayýp":"kayb", "nabýz":"nabz"}, #Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
+                    "resim":"resm", "kayýn":"kayn", "kayýp":"kayb", "nabýz":"nabz", "ret":"redd"}, #Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
               #Büyük ünlü uyumu istisnalarý #Cem Yýldýz'a teþekkürler
               "büu": ("kontrol", "bandrol", "banal", "alpul", "ametal", "anormal", "amiral"
                        , "sadakat", "santral", "þefkat", "usul", "normal", "oryantal", "hakikat"
                        , "hayal", "saat", "kemal", "gol", "kalp", "metal", "faul", "mineral", "alkol"
-                       , "misal", "meal", "oramiral", "tuðamiral", "orjinal", "koramiral", "general"
+                       , "misal", "meal", "oramiral", "tuðamiral", "orjinal","orijinal", "koramiral", "general"
                        , "tümgeneral", "tuðgeneral", "korgeneral", "petrol", "liberal", "meral"
-                       , "metrapol", "ekümenapol", "lokal", "lügat", "liyakat", "legal", "mentol"
+                       , "metropol", "ekümenapol", "lokal", "lügat", "liyakat", "legal", "mentol"
                        , "beþamol", "meþgul", "meþekkat", "oval", "mahsul", "makul", "meraþal"
                        , "metaryal", "nasihat", "radikal", "moral", "dikkat", "rol", "sinyal"
                        , "sosyal", "total", "þevval", "sual", "spesiyal", "tuval", "turnusol", "hol"
