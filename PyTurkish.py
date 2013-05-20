@@ -51,11 +51,11 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
                     "emir":"emr", "fikir":"fikr", "ilim":"ilm", "kayýt":"kayd", "keþif":"keþf", "keyif":"keyf", "nakil":"nakl", "nehir":"nehr",
                     "sabýr":"sabr", "seyir":"seyr", "þehir":"þehr", "þekil":"þekl", "zehir":"zehr", "zihin":"zihn", "zan":"zann","baðýr":"baðr",
                     "aðýz":"aðz", "alýn":"aln", "beniz":"benz", "böðür":"böðr", "geniz":"genz", "göðüs":"göðs", "gönül":"gönl", "oðul":"oðl",
-                    "resim":"resm", "kayýn":"kayn", "kayýp":"kayb", "nabýz":"nabz", "ret":"redd"}, #Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
+                    "resim":"resm", "kayýn":"kayn", "kayýp":"kayb", "nabýz":"nabz", "ret":"redd", "kalp":"kalb"}, #Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
               #Büyük ünlü uyumu istisnalarý #Cem Yýldýz'a teþekkürler
               "büu": ("kontrol", "bandrol", "banal", "alpul", "ametal", "anormal", "amiral"
                        , "sadakat", "santral", "þefkat", "usul", "normal", "oryantal", "hakikat"
-                       , "hayal", "saat", "kemal", "gol", "kalp", "metal", "faul", "mineral", "alkol"
+                       , "hayal", "saat", "kemal", "gol", "kalb", "metal", "faul", "mineral", "alkol"
                        , "misal", "meal", "oramiral", "tuðamiral", "orjinal","orijinal", "koramiral", "general"
                        , "tümgeneral", "tuðgeneral", "korgeneral", "petrol", "liberal", "meral"
                        , "metropol", "ekümenapol", "lokal", "lügat", "liyakat", "legal", "mentol"
@@ -108,6 +108,7 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
     def ler(self):
         """Çoðul eki"""
         self.__ek="ler"
+        self.__kaynastirma=""
         return self.__isle__()
         
     #Durum (Hâl) Ekleri
@@ -126,30 +127,52 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
     def de(self):
         """Bulunma durum eki"""
         self.__ek="de"
+        self.__kaynastirma=""
         return self.__isle__()
 
     def den(self):
         """Ayrýlma durum eki"""
         self.__ek="den"
+        self.__kaynastirma=""
         return self.__isle__()
     
     #Ýyelik Ekleri
     def benim(self):
-        """Ýyelik eki (ben)"""
+        """1. tekil þahýs iyelik eki"""
         self.__ek="m"
         self.__kaynastirma="i"
         return self.__isle__()
         
     def senin(self):
-        """Ýyelik eki (sen)"""
+        """2. tekil þahýs iyelik eki"""
         self.__ek="n"
         self.__kaynastirma="i"
         return self.__isle__()
     
     def onun(self):
-        """Ýyelik eki (o)"""
+        """3. tekil þahýs iyelik eki"""
         self.__ek="i"
         self.__kaynastirma="s"
+        return self.__isle__()
+
+    def bizim(self):
+        """1. çoðul þahýs iyelik eki"""
+        self.benim()
+        self.__ek="z"
+        self.__kaynastirma="i"
+        return self.__isle__()
+
+    def sizin(self):
+        """2. çoðul þahýs iyelik eki"""
+        self.senin()
+        self.__ek="z"
+        self.__kaynastirma="i"
+        return self.__isle__()
+
+    def onlarin(self):
+        """3. çoðul þahýs iyelik eki"""
+        self.__ek="leri"
+        self.__kaynastirma=""
         return self.__isle__()
 
     #Tamlayan Eki
@@ -165,6 +188,7 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
     def ce(self):
         """Eþitlik eki"""
         self.__ek="ce"
+        self.__kaynastirma=""
         return self.__isle__()
 
     def __isle__(self):
