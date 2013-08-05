@@ -1,7 +1,7 @@
-Python 2.7.3 ile yazýlmýþtýr. Diðer sürümlerle uyumluluðu tam
-olarak bilinmemektedir.
+Python 2.7.x ile yazýlmýþtýr. Diðer sürümlerle uyumluluðu test
+edilmemiþtir.
 
-Programýn amacý deðiþkenlere gelen eklerin dilbilgisine uygun
+Kütüphanenin amacý deðiþkenlere gelen eklerin dilbilgisine uygun
 bir þekilde yazýlmasýný otomatikleþtirmektir (diðer bir deyiþle
 çekim ekleri kütüphanesidir). Özellikle websitelerinde karþýlaþýlan 
 bu sýkýntýdan benim gibi rahatsýz olduysanýz bu yazýlýmý kullaniblir 
@@ -16,9 +16,5 @@ from PyTurkish import *
 Kullaným örneði:
 >>> ek("Deneme").i()
 'Denemeyi'
-
-NOT: -in tamlama eki Python'da yerleþik bir deyim olmasý nede-
-niyle (kaynaþtýrma eki ile birlikte) "nin()" olarak isimlen-
-dirilmiþtir.
 
 Hata ve görüþ bildirileri için, "Issues" bölümüne mesaj atýnýz.
