@@ -64,7 +64,7 @@ Kullaným þekli: ek("Sözcük").den() veya ek("Sözcük").cekim().den()
                        , "sosyal", "total", "þevval", "sual", "spesiyal", "tuval", "turnusol", "hol"
                        , "tropikal", "zeval", "zelal", "terminal", "termal", "resul", "sadakat", "resital"
                        , "refakat", "pastoral", "hal", "müzikal", "müzikhol", "menkul", "mahmul", "maktul"
-                       , "kolestrol", "kýraat", "ziraaat", "kapital", "katedral", "kabul", "kanaat", "jurnal"
+                       , "kolestrol", "kýraat", "ziraat", "kapital", "katedral", "kabul", "kanaat", "jurnal"
                        , "kefal", "idrak", "istiklal", "integral", "final", "ekol", "emsal", "enternasyonal"
                        , "nasyonal", "enstrümantal", "harf", "cemal", "cemaat", "glikol", "karambol", "parabol"
                        , "kemal", "zulm", "nakl") #Turkish-Suffix-Library'den alýnmýþtýr. (https://github.com/miklagard/Turkish-Suffix-Library)
