@@ -1,282 +1,245 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: cp1254 -*-
-
-#Sürüm: 1.3
-
+#
 ##################################################################
 #
-# Copyright (C) 2011-2013 PythEch
+# Copyright (C) 2011-2014 PythEch
 #
-# This Source Code Form is subject to the terms of the Mozilla 
-# Public License, v. 2.0. If a copy of the MPL was not distributed 
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
 # with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 ##################################################################
 
-import string
+# Private/Public simulasyonu için teþekkürler:
+# http://en.literateprograms.org/Private_class_variables_%28Python%29?oldid=19190
 
+from sys import version_info
 
-class ek():
-    """ek([String]Sözcük, [Boolean]ÖzelIsim=False).fonksiyon() -> String
-Çekim ekleri kütüphanesi.
+__all__ = ['Ek', '__version__']
+__version__ = '2.0'
 
-Kullaným þekli: ek('Sözcük').den()
->>> 'Sözcükten'
-Özel isimler için: ek('Ali',True).i()
->>> "Ali'yi"
-"""
-    sayilardaOtomatikOzelIsim = True  # Sayý girildiðinde otomatik olarak özel isim kabul edilecek,
-    # örn: 'ek('5').den() büyük sayýlar' >>> 5'ten büyük sayýlar
-    __sozcuk = ''  # Küçük harflere çevirilmiþ sözcük
-    __asilSozcuk = ''  # Orijinal sözcük
-    __ek = ''
-    __kaynastirma = ''  # Ünlü/Ünsüz kaynaþtýrma eki, __isle__() fonksiyonu otomatik karar verir
-    __ozelIsim = False
-    __sertler = ('p', 'ç', 't', 'k', 's', 'þ', 'h', 'f')
-    __yumusama = {'p': 'b', 'ç': 'c', 't': 'd', 'k': 'ð'}
-    __benzesme = {'c': 'ç', 'd': 't', 'g': 'k'}
-    __unluler = {'tüm': ('a', 'e', 'ý', 'i', 'u', 'ü', 'o', 'ö'),
-                 'kalýn': ('a', 'ý', 'u', 'o'),
-                 'ince': ('e', 'i', 'ü', 'ö'),
-                 'düz': ('a', 'ý', 'e', 'i'),
-                 'yuvarlak': ('o', 'u', 'ö', 'ü')}
-    __sayilar = {
-        2: {'1': 'on', '2': 'yirmi', '3': 'otuz', '4': 'kýrk', '5': 'elli', '6': 'altmýþ', '7': 'yetmiþ', '8': 'seksen',
-            '9': 'doksan'},
-        1: {'0': 'sýfýr', '1': 'bir', '2': 'iki', '3': 'üç', '4': 'dört', '5': 'beþ', '6': 'altý', '7': 'yedi',
-            '8': 'sekiz', '9': 'dokuz'}}
-    # Tamamlanacak
-    _istisna = {'kök': {'þu': 'þun', 'bu': 'bun', 'o': 'on'}, # Ek aldýklarýnda kökü deðiþen sözcükler
-                'diðer': {'bene': 'bana', 'sene': 'sana'}, # Diðer istisnalar
-                'ünlü': {
-                    'renk': 'reng', 'cenk': 'ceng', 'his': 'hiss', 'isim': 'ism', 'beyin': 'beyn', 'boyun': 'boyn',
-                    'karýn': 'karn', 'af': 'aff', 'kýsým': 'kýsm', 'nesil': 'nesl', 'burun': 'burn',
-                    'zulüm': 'zulm', 'akýl': 'akl', 'asýl': 'asl', 'asýr': 'asr', 'devir': 'devr', 'emir': 'emr',
-                    'fikir': 'fikr', 'ilim': 'ilm', 'kayýt': 'kayd', 'keþif': 'keþf', 'keyif': 'keyf',
-                    'nakil': 'nakl', 'nehir': 'nehr', 'sabýr': 'sabr', 'seyir': 'seyr', 'þehir': 'þehr',
-                    'þekil': 'þekl', 'zehir': 'zehr', 'zihin': 'zihn', 'zan': 'zann', 'baðýr': 'baðr',
-                    'aðýz': 'aðz', 'alýn': 'aln', 'beniz': 'benz', 'böðür': 'böðr', 'geniz': 'genz',
-                    'göðüs': 'göðs', 'gönül': 'gönl', 'oðul': 'oðl', 'resim': 'resm', 'kayýn': 'kayn',
-                    'kayýp': 'kayb', 'nabýz': 'nabz', 'ret': 'redd', 'kalp': 'kalb'},
-                # Sadece ünlü ek aldýklarýnda kökü deðiþen sözcükler (ünlü düþmesi)
-                'büu': (
-                    'kontrol', 'bandrol', 'banal', 'alpul', 'ametal', 'anormal', 'amiral', 'sadakat', 'santral',
-                    'þefkat', 'usul', 'normal', 'oryantal', 'hakikat', 'hayal', 'saat', 'kemal', 'gol', 'kalb', 'metal',
-                    'faul', 'mineral', 'alkol', 'misal', 'meal', 'oramiral', 'tuðamiral', 'orjinal', 'orijinal',
-                    'koramiral', 'general', 'tümgeneral', 'tuðgeneral', 'korgeneral', 'petrol', 'liberal', 'meral',
-                    'metropol', 'ekümenapol', 'lokal', 'lügat', 'liyakat', 'legal', 'mentol', 'beþamol', 'meþgul',
-                    'meþekkat', 'oval', 'mahsul', 'makul', 'meraþal', 'metaryal', 'nasihat', 'radikal', 'moral',
-                    'dikkat', 'rol', 'sinyal', 'sosyal', 'total', 'þevval', 'sual', 'spesiyal', 'tuval', 'turnusol',
-                    'hol', 'tropikal', 'zeval', 'zelal', 'terminal', 'termal', 'resul', 'sadakat', 'resital', 'refakat',
-                    'pastoral', 'hal', 'müzikal', 'müzikhol', 'menkul', 'mahmul', 'maktul', 'kolestrol', 'kýraat',
-                    'ziraat', 'kapital', 'katedral', 'kabul', 'kanaat', 'jurnal', 'kefal', 'idrak', 'istiklal',
-                    'integral', 'final', 'ekol', 'emsal', 'enternasyonal', 'nasyonal', 'enstrümantal', 'harf', 'cemal',
-                    'cemaat', 'glikol', 'karambol', 'parabol', 'kemal', 'zulm', 'nakl')
-                # Turkish-Suffix-Library'den alýnmýþtýr. (https://github.com/miklagard/Turkish-Suffix-Library)
-                # Büyük ünlü uyumu istisnalarý #Cem Yýldýz'a teþekkürler
-    }
+# == Sabitler == #
+# Ünsüzler
+SERT_UNSUZ = ('p', 'ç', 't', 'k', 's', 'þ', 'h', 'f')
+YUMUSAMA = {'p': 'b', 'ç': 'c', 't': 'd', 'k': 'ð'}
+BENZESME = {'c': 'ç', 'd': 't', 'g': 'k'}
+# Ünlüler
+UNLU = ('a', 'e', 'ý', 'i', 'u', 'ü', 'o', 'ö')
+KALIN_UNLU = ('a', 'ý', 'u', 'o')
+INCE_UNLU = ('e', 'i', 'ü', 'ö')
+DUZ_UNLU = ('a', 'ý', 'e', 'i')
+YUVARLAK_UNLU = ('o', 'u', 'ö', 'ü')
 
-    def __repr__(self):
-        return self.__sozcuk
-
-    def __init__(self, Sozcuk, ozelIsim=False):
-        self.__sozcuk = Sozcuk.replace('Ý', 'i').replace('I', 'ý').lower()  # Python Türkçe bug-fix
-        self.__asilSozcuk = Sozcuk
-        self.__ozelIsim = ozelIsim
-
-    #Analiz fonksiyonlarý
-    def _sertMi(self):
-        return (True if self.__sozcuk.endswith(self.__sertler) else False)
-
-    def _sonUnlu(self):
-        liste = ['a', -1]
-        for i in self.__unluler['tüm']:
-            ara = self.__sozcuk.rfind(i)
-            if ara > liste[1]:
-                liste[0] = i
-                liste[1] = ara
-        return liste[0]
-
-    def _inceMi(self):
-        return (True if self.__unluler['ince'].count(self._sonUnlu()) > 0 else False)
-
-    def _duzMu(self):
-        return (True if self.__unluler['düz'].count(self._sonUnlu()) > 0 else False)
-
-    #Ünlü saymak hatalara neden olabilir#
-    def _kacHeceli(self):
-        return sum(self.__sozcuk.count(x) for x in self.__unluler['tüm'])
-
-    #Çoðul Eki    
-    def ler(self):
-        """Çoðul eki"""
-        self.__ek = 'ler'
-        self.__kaynastirma = ''
-        return self.__isle__()
-
-    #Durum (Hâl) Ekleri
-    def i(self):
-        """Belirtme durum eki"""
-        self.__ek = 'i'
-        self.__kaynastirma = 'y'
-        return self.__isle__()
-
-    def e(self):
-        """Yönelme durum eki"""
-        self.__ek = 'e'
-        self.__kaynastirma = 'y'
-        return self.__isle__()
-
-    def de(self):
-        """Bulunma durum eki"""
-        self.__ek = 'de'
-        self.__kaynastirma = ''
-        return self.__isle__()
-
-    def den(self):
-        """Ayrýlma durum eki"""
-        self.__ek = 'den'
-        self.__kaynastirma = ''
-        return self.__isle__()
-
-    #Ýyelik Ekleri
-    def benim(self):
-        """1. tekil þahýs iyelik eki"""
-        self.__ek = 'm'
-        self.__kaynastirma = 'i'
-        return self.__isle__()
-
-    def senin(self):
-        """2. tekil þahýs iyelik eki"""
-        self.__ek = 'n'
-        self.__kaynastirma = 'i'
-        return self.__isle__()
-
-    def onun(self):
-        """3. tekil þahýs iyelik eki"""
-        self.__ek = 'i'
-        self.__kaynastirma = 's'
-        return self.__isle__()
-
-    def bizim(self):
-        """1. çoðul þahýs iyelik eki"""
-        self.benim()
-        self.__ek = 'z'
-        self.__kaynastirma = 'i'
-        return self.__isle__()
-
-    def sizin(self):
-        """2. çoðul þahýs iyelik eki"""
-        self.senin()
-        self.__ek = 'z'
-        self.__kaynastirma = 'i'
-        return self.__isle__()
-
-    def onlarin(self):
-        """3. çoðul þahýs iyelik eki"""
-        self.__ek = 'leri'
-        self.__kaynastirma = ''
-        return self.__isle__()
-
-    #Tamlayan Eki
-    def nin(self):
-        """Ýlgi eki (tamlayan)
-    
-Örnek: ek('Kapý').nin()+' '+ek('kol').i()"""
-        self.__ek = 'in'
-        self.__kaynastirma = 'n'
-        return self.__isle__()
-
-    #Eþitlik eki
-    def ce(self):
-        """Eþitlik eki"""
-        self.__ek = 'ce'
-        self.__kaynastirma = ''
-        return self.__isle__()
-
-    #Özel ek
-    def ozel(self,ek,kaynastirma=''):
-        self.__ek = ek
-        self.__kaynastirma = kaynastirma
-        return self.__isle__()
-
-    def __isle__(self):
-        #Ek aldýklarýnda kökü deðiþen sözcükler
-        if self.__sozcuk in self._istisna['kök']:
-            self.__sozcuk = self._istisna['kök'][self.__sozcuk]
-        #Sayýlar
-        if self.__sozcuk.endswith(tuple(string.digits)):
-            if self.sayilardaOtomatikOzelIsim:
-                self.__ozelIsim = True
-            sayi = ''
-            # Sayýyý yalnýz býrak
-            self.__sozcuk = self.__sozcuk.replace(',', '').replace('.', '')
-            for i in range(1, self.__sozcuk.__len__() + 1):
-                if i == self.__sozcuk.__len__() or not self.__sozcuk[-i - 1].isdigit():
-                    sayi = self.__sozcuk[(-i):]
-                    break
-            # Sayýnýn sonunda kaç tane sýfýr olduðunu say
-            sifir = 0
-            for i in range(sayi.__len__()):
-                if sayi[-i - 1] != '0':
-                    sifir = i
-                    break
-            if sifir >= 12:
-                self.__sozcuk = 'trilyon'
-                # 10^12 den sonra basamaklar 'ilyon' ile bittiði için ek getirirken farklýlýk oluþturmuyor
-            elif sifir >= 9:
-                self.__sozcuk = 'milyar'
-            elif sifir >= 6:
-                self.__sozcuk = 'milyon'
-            elif sifir >= 3:
-                self.__sozcuk = 'bin'
-            elif sifir == 2:
-                self.__sozcuk = 'yüz'
-            elif sifir == 1:
-                self.__sozcuk = self.__sayilar[2][sayi[-2]]
+class Ek(object):
+    def __init__(self, sozcuk, ozel_isim=False):
+        if version_info[0] < 3 and isinstance(sozcuk, unicode):
+            sozcuk = sozcuk.encode('cp1254', 'ignore')
+        sozcuk = sozcuk.replace('Ý', 'i').replace('I', 'ý').lower()
+        
+        _sozcuk = sozcuk #isle() fonksiyonun görmesi için
+        
+        def __repr__(self):
+            if not ozel_isim:
+                return sozcuk
             else:
-                self.__sozcuk = self.__sayilar[1][sayi[-1]]
-            asilSozcuk = self.__sozcuk
-            ret = self.__isle__()
-            return self.__asilSozcuk[:-(sayi.__len__())] + ret.replace(asilSozcuk, sayi)
-        #Ünsüz Sertleþmesi (Benzeþmesi)
-        if self._sertMi() and self.__ek.startswith(tuple(self.__benzesme.keys())):
-            self.__ek = self.__benzesme[self.__ek[0]] + self.__ek[1:]
-        #Ünsüz Yumuþamasý
-        if not self.__ozelIsim and self._kacHeceli() > 1 and self.__sozcuk.endswith(tuple(self.__yumusama.keys())) \
-                and self.__ek.startswith(self.__unluler['tüm']) and self.__sozcuk[-2] in self.__unluler['tüm']:
-            self.__sozcuk = self.__sozcuk[:-1] + self.__yumusama[self.__sozcuk[-1]]
-        #Kaynaþtýrma Ünlüsü
-        if not self.__ek.startswith(self.__unluler['tüm']) and not self.__sozcuk.endswith(self.__unluler['tüm']):
-            self.__ek = self.__kaynastirma + self.__ek
-        #Düzlük-Yuvarlaklýk (Küçük Ünlü) Uyumu
-        if not self._duzMu():
-            self.__ek = self.__ek.replace('i', 'ü')
-        #Kalýnlýk-Ýncelik (Büyük Ünlü) Uyumu
-        if not self._inceMi() and not self.__sozcuk in self._istisna['büu']:
-            for i, j in zip(self.__unluler['ince'], self.__unluler['kalýn']):
-                self.__ek = self.__ek.replace(i, j)
-        #Su, Ne sözcükleri istisnasý
-        if ('su', 'ne').count(self.__sozcuk) > 0:
-            self.__kaynastirma = 'y'
-        #Kaynaþtýrma Ünsüzü
-        if self.__sozcuk.endswith(self.__unluler['tüm']) and self.__ek.startswith(self.__unluler['tüm']):
-            self.__ek = self.__kaynastirma + self.__ek
-        #Özel Ýsim
-        if self.__ozelIsim:
-            self.__ek = "'" + self.__ek
-        #Ünlü Düþmesi (Ýstisna)
-        if self.__sozcuk in self._istisna['ünlü'] and self.__ek.startswith(self.__unluler['tüm']):
-            self.__sozcuk = self._istisna['ünlü'][self.__sozcuk]
-        self.__sozcuk += self.__ek
-        #Diðer Ýstisnalar
-        if self.__sozcuk in self._istisna['diðer']:
-            self.__sozcuk = self._istisna['diðer'][self.__sozcuk]
-        #Return
-        if self.__asilSozcuk.isupper():
-            return self.__sozcuk.replace('i', 'Ý').replace('ý', 'I').upper()  # Python Türkçe bug-fix
-        elif self.__asilSozcuk.istitle():
-            self.__sozcuk = self.__sozcuk[0].replace('i', 'Ý').replace('ý', 'I') + self.__sozcuk[1:]
-            return self.__sozcuk.title()
+                return sozcuk[0].replace('i', 'Ý').replace('ý', 'I').upper() + sozcuk[1:]
+        Ek.__repr__ = __repr__
+        
+
+        # == Analiz Fonksiyonlarý == #
+
+        def unlu_sayisi(harfler):
+            return len([x for x in harfler if x in UNLU])
+
+        # ! Optimize edilebilir ! #
+        def hecele():
+            harf_sayisi=len(sozcuk)
+            heceler=[]
+            son_indeks=n=0
+            while n < (harf_sayisi - 1):
+                # 3 ünsüz yanyana
+                if n+3 < harf_sayisi and unlu_sayisi(sozcuk[n:n+3]) == 0:
+                    heceler.append(sozcuk[son_indeks:n+2])
+                    son_indeks=n=n+2
+                # 2 ünlü veya ünsüz yanyana
+                elif n+2 < harf_sayisi and unlu_sayisi(sozcuk[n:n+2]) in (0,2):
+                    heceler.append(sozcuk[son_indeks:n+1])
+                    son_indeks=n=n+1
+                # tek ünsüz
+                elif not sozcuk[n] in UNLU and n != 0 and unlu_sayisi(sozcuk[n:]) != 0:
+                    heceler.append(sozcuk[son_indeks:n])
+                    son_indeks=n
+                n+=1
+            # son hece sanitasyonu
+            if unlu_sayisi(sozcuk[-2:]) == 2: # 'video' gibi kelimeler için
+                heceler.append(sozcuk[son_indeks:-1])
+                heceler.append(sozcuk[-1])
+            else:
+                heceler.append(sozcuk[son_indeks:])
+            return heceler
+        self.hecele = hecele
+
+        # == Ek Fonksiyonlarý == #
+
+        #Durum (Hâl) Ekleri
+        def i():
+            "Belirtme durum eki"
+            return isle('i', 'y')
+        self.i = i
+
+        def e():
+            u"Yönelme durum eki"
+            return isle('e', 'y')
+        self.e = e
+
+        def de():
+            "Bulunma durum eki"
+            return isle('de')
+        self.de = de
+
+        def den():
+            u"Ayrýlma durum eki"
+            return isle('den')
+        self.den = den
+
+        #Çoðul Eki
+        def ler():
+            u"Çoðul eki"
+            return isle('ler')
+        self.ler = ler
+
+        #Eþitlik eki
+        def ce():
+            u"Eþitlik eki"
+            return isle('ce')
+        self.ce = ce
+
+        #Ýyelik Ekleri
+        def benim():
+            u"1. tekil þahýs iyelik eki"
+            return isle('m', 'i')
+        self.benim = benim
+
+        def senin():
+            u"2. tekil þahýs iyelik eki"
+            return isle('n', 'i')
+        self.senin = senin
+
+        def onun():
+            u"3. tekil þahýs iyelik eki"
+            return isle('i', 's')
+        self.onun = onun
+
+        def bizim():
+            u"1. çoðul þahýs iyelik eki"
+            return isle('miz', 'i')
+        self.bizim = bizim
+
+        def sizin():
+            u"2. çoðul þahýs iyelik eki"
+            return isle('niz', 'i')
+        self.sizin = sizin
+
+        def onlarin():
+            u"3. çoðul þahýs iyelik eki"
+            return isle('leri')
+        self.onlarin = onlarin
+
+        #Tamlayan Eki
+        def tamlayan():
+            u"Ýlgi (tamlayan) eki"
+            return isle('in', 'n')
+        self.tamlayan = tamlayan
+
+        #Tamlanan Eki (Ýyelik Eki)
+        def tamlanan():
+            u"Tamlanan eki, 3. tekil þahýs iyelik ekiyle aynýdýr"
+            return onun()
+        self.tamlanan = tamlanan
+        
+        def isle(ek, kaynastirma=''):
+            sozcuk = _sozcuk
+
+            try:
+                son_unlu=next(x for x in reversed(sozcuk) if x in UNLU)
+            except:
+                raise ValueError("'%s' sözcüðü uygunsuz, hiç ünlü bulunamadý!" % sozcuk)
+
+            #Kaynaþtýrma Ünlüsü
+            if not (ek.startswith(UNLU) or sozcuk.endswith(UNLU)):
+                ek = kaynastirma + ek
+
+            #Ünsüz Sertleþmesi (Benzeþmesi)
+            if sozcuk.endswith(SERT_UNSUZ) and ek[0] in BENZESME:
+                ek = BENZESME[ek[0]] + ek[1:]
+
+            #Ünsüz Yumuþamasý
+            if not ozel_isim and sozcuk[-1] in YUMUSAMA and sozcuk[-2] in UNLU \
+                    and ek.startswith(UNLU) and unlu_sayisi(sozcuk) > 1: #and len(hecele()) > 1:
+                sozcuk = sozcuk[:-1] + YUMUSAMA[sozcuk[-1]]
+
+            #Düzlük-Yuvarlaklýk (Küçük Ünlü) Uyumu
+            if not son_unlu in DUZ_UNLU:
+                ek = ek.replace('i', 'ü')
+
+            #Kalýnlýk-Ýncelik (Büyük Ünlü) Uyumu
+            if not son_unlu in INCE_UNLU: #and not self.sozcuk in self._istisna['büu']:
+                for i, j in zip(INCE_UNLU, KALIN_UNLU):
+                    ek = ek.replace(i, j)
+
+            #Su, Ne sözcükleri istisnasý
+            if sozcuk in ('su', 'ne'):
+                kaynastirma = 'y'
+
+            #Kaynaþtýrma Ünsüzü
+            if sozcuk.endswith(UNLU) and ek.startswith(UNLU):
+                ek = kaynastirma + ek
+
+            #Özel Ýsim
+            if ozel_isim and not "'" in sozcuk:
+                ek = "'" + ek
+            
+            return Ek(sozcuk + ek, ozel_isim)
+
+
+if __name__ == '__main__':
+    import requests, re, random
+    get=requests.get('http://www.birsozluk.com/')
+    get.encoding='cp1254'
+    s=re.search('</th></tr><tr><td align=center>(.*)</td></tr></table><br>', get.text).groups()[0]
+    if version_info[0] < 3:
+        s=s.encode('cp1254', 'ignore')
+    s=re.findall(r'href="([^\'">]+)', s)
+    for sozcuk in s:
+        rand = random.randint(0,13)
+        sozcuk = sozcuk.strip()
+        if rand == 0:
+            ekli='-'.join(Ek(sozcuk).hecele()), "hecele"
+        elif rand == 1:
+            ekli=Ek(sozcuk).i(), "i"
+        elif rand == 2:
+            ekli=Ek(sozcuk).e(), "e"
+        elif rand == 3:
+            ekli=Ek(sozcuk).de(), "de"
+        elif rand == 4:
+            ekli=Ek(sozcuk).den(), "den"
+        elif rand == 5:
+            ekli=Ek(sozcuk).ler(), "ler"
+        elif rand == 6:
+            ekli=Ek(sozcuk).ce(), "ce"
+        elif rand == 7:
+            ekli=Ek(sozcuk).benim(), "benim"
+        elif rand == 8:
+            ekli=Ek(sozcuk).senin(), "senin"
+        elif rand == 9:
+            ekli=Ek(sozcuk).onun(), "onun"
+        elif rand == 10:
+            ekli=Ek(sozcuk).bizim(), "bizim"
+        elif rand == 11:
+            ekli=Ek(sozcuk).sizin(), "sizin"
+        elif rand == 12:
+            ekli=Ek(sozcuk).onlarin(), "onlarin"
         else:
-            return self.__sozcuk
+            ekli=Ek(sozcuk).tamlayan(), "tamlayan"
+        print('%15s: %30s (%s)' % (sozcuk, ekli[0], ekli[1]))
